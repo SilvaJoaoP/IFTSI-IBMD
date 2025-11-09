@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PASTOR
+  TESOUREIRO
+  SECRETARIO
+  DIACONO
+  MIDIA
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  nome      String
+  cpf       String?   @unique
+  senha     String
+  cargo     Role      
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+}
+
+model Membro {
+  id          String    @id @default(cuid())
+  nome        String
+  email       String?
+  telefone    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model TransacaoFinanceira {
+  id          String    @id @default(cuid())
+  descricao   String
+  valor       Float
+  tipo        String  
+  data        DateTime  @default(now())
+}
+
+// Modelo de Eventos (Pode ser usado no futuro Calendário)
+model Evento {
+  id          String    @id @default(cuid())
+  nome        String
+  dataInicio  DateTime
+  dataFim     DateTime?
+}
+
+model Escala {
+  id        String    @id @default(cuid())
+  titulo    String
+  descricao String?
+  data      DateTime
+}
+
+model Midia {
+  id        String    @id @default(cuid())
+  url       String
+  descricao String?
+  tipo      String    
+  createdAt DateTime  @default(now())
+}
