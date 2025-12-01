@@ -92,3 +92,14 @@ export async function deleteMediaAction(mediaId: string, albumId: string) {
 
   return { success: true, message: "Mídia removida!" };
 }
+
+export async function deleteAlbumAction(albumId: string) {
+  await checkPermission();
+
+  await prisma.album.delete({
+    where: { id: albumId },
+  });
+
+  revalidatePath("/midia");
+  redirect("/midia");
+}

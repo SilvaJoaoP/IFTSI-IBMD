@@ -3,7 +3,12 @@ import { auth } from "@/lib/auth";
 import { getPermissionsForRole } from "@/lib/permissions";
 import { Role } from "@prisma/client";
 import { BackButton } from "@/components/BackButton";
-import { addMediaAction, deleteMediaAction } from "../actions";
+import { DeleteAlbumButton } from "@/components/DeleteAlbumButton";
+import {
+  addMediaAction,
+  deleteMediaAction,
+  deleteAlbumAction,
+} from "../actions";
 import { redirect } from "next/navigation";
 import { MediaForm } from "@/components/MediaForm";
 import { MediaGallery } from "@/components/MediaGallery";
@@ -44,12 +49,19 @@ export default async function PaginaDetalhesAlbum(props: {
         </div>
 
         {permissions.canManageMidia && (
-          <Link
-            href={`/midia/${album.id}/edit`}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-          >
-            ✏️ Editar Capa/Nome
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/midia/${album.id}/edit`}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              ✏️ Editar Capa/Nome
+            </Link>
+
+            <DeleteAlbumButton
+              albumId={album.id}
+              deleteAction={deleteAlbumAction}
+            />
+          </div>
         )}
       </div>
 
