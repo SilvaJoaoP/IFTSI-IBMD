@@ -41,7 +41,7 @@ Esta é uma aplicação web para a administração interna da igreja, incluindo:
 1.  **Clone o repositório:**
 
     ```bash
-    git clone <url-do-seu-repositorio>
+    git clone https://github.com/SilvaJoaoP/IFTSI-IBMD.git
     cd gestao-ibmd
     ```
 
