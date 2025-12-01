@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 /**
  * Um botão de link simples que navega para um 'href' específico.

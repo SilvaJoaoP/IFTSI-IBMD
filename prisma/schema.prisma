@@ -61,8 +61,19 @@ model Escala {
 
 model Midia {
   id        String    @id @default(cuid())
-  url       String
+  url  String  @db.Text
   descricao String?
   tipo      String    
+  albumId   String
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
+}
+
+model Album {
+  id        String   @id @default(cuid())
+  titulo    String
+  capaUrl String? @db.Text 
+  dataEvento DateTime @default(now())
+  midias    Midia[]  
+  createdAt DateTime @default(now())
 }

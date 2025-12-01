@@ -8,6 +8,7 @@ interface AppPermissions {
   canSeeEscalas: boolean;
   canSeeGestaoCargos: boolean;
   canSeeGaleriaMidia: boolean;
+  canManageMidia: boolean;
 }
 
 const defaultPermissions: AppPermissions = {
@@ -18,6 +19,7 @@ const defaultPermissions: AppPermissions = {
   canSeeEscalas: false,
   canSeeGestaoCargos: false,
   canSeeGaleriaMidia: false,
+  canManageMidia: false,
 };
 
 export function getPermissionsForRole(role: Role): AppPermissions {
@@ -31,6 +33,7 @@ export function getPermissionsForRole(role: Role): AppPermissions {
         canSeeEscalas: true,
         canSeeGestaoCargos: true,
         canSeeGaleriaMidia: true,
+        canManageMidia: true,
       };
 
     case Role.TESOUREIRO:
@@ -38,6 +41,8 @@ export function getPermissionsForRole(role: Role): AppPermissions {
         ...defaultPermissions,
         canSeeRelatorioFinanceiro: true,
         canSeeDocumentos: true,
+        canSeeGaleriaMidia: true,
+        canManageMidia: false,
       };
 
     case Role.SECRETARIO:
@@ -45,6 +50,8 @@ export function getPermissionsForRole(role: Role): AppPermissions {
         ...defaultPermissions,
         canSeeRelatorioMembros: true,
         canSeeDocumentos: true,
+        canSeeGaleriaMidia: true,
+        canManageMidia: false,
       };
 
     case Role.DIACONO:
@@ -53,6 +60,7 @@ export function getPermissionsForRole(role: Role): AppPermissions {
         canSeeCalendarioAnual: true,
         canSeeEscalas: true,
         canSeeGaleriaMidia: true,
+        canManageMidia: false,
       };
 
     case Role.MIDIA:
@@ -60,6 +68,7 @@ export function getPermissionsForRole(role: Role): AppPermissions {
         ...defaultPermissions,
         canSeeEscalas: true,
         canSeeGaleriaMidia: true,
+        canManageMidia: true,
         canSeeCalendarioAnual: true,
       };
 
