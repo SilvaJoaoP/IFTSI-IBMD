@@ -37,26 +37,6 @@ export default async function PaginaArquivos() {
               className="object-contain"
             />
           </div>
-
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-gray-800">
-                {user?.nome || "Usuário"}
-              </p>
-              <p className="text-[10px] text-gray-500">
-                {user?.cargo || "Cargo"}
-              </p>
-            </div>
-            <Link
-              href="/perfil"
-              className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 shadow-sm flex items-center justify-center hover:ring-2 hover:ring-blue-400 transition"
-            >
-              {/* Placeholder avatar or user image if available */}
-              <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white font-bold text-lg">
-                {user?.nome?.charAt(0).toUpperCase() || "U"}
-              </div>
-            </Link>
-          </div>
         </header>
 
         <div className="flex justify-between items-center mb-6">

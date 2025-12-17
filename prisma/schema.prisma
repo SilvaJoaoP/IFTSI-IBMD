@@ -27,13 +27,59 @@ model User {
   
 }
 
+enum SituacaoMembro {
+  MEMBRO
+  CONGREGADO
+  AFASTADO
+}
+
+enum TipoParentesco {
+  PAI
+  MAE
+  FILHO
+  FILHA
+  ESPOSO
+  ESPOSA
+  IRMAO
+  IRMA
+  OUTRO
+}
+
 model Membro {
   id          String    @id @default(cuid())
   nome        String
+  cpf         String?   @unique
   email       String?
   telefone    String?
+  
+  // Endereço
+  rua         String?
+  numero      String?
+  bairro      String?
+  cidade      String?
+  estado      String?
+  cep         String?
+
+  situacao    SituacaoMembro @default(MEMBRO)
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  // Relacionamentos
+  parentesOrigem  Parentesco[] @relation("MembroOrigem")
+  parentesDestino Parentesco[] @relation("MembroDestino")
+}
+
+model Parentesco {
+  id              String @id @default(cuid())
+  membroOrigemId  String
+  membroDestinoId String
+  tipo            TipoParentesco
+  
+  membroOrigem    Membro @relation("MembroOrigem", fields: [membroOrigemId], references: [id], onDelete: Cascade)
+  membroDestino   Membro @relation("MembroDestino", fields: [membroDestinoId], references: [id], onDelete: Cascade)
+
+  @@unique([membroOrigemId, membroDestinoId])
 }
 
 model TransacaoFinanceira {
