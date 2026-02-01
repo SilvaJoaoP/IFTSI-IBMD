@@ -7,7 +7,12 @@ import { redirect } from "next/navigation";
 import { deleteFileAction } from "../actions";
 import { AddFileSection } from "@/components/AddFileSection";
 import { DeleteFolderButton } from "@/components/DeleteFolderButton";
-import { FileIcon, Trash2 } from "lucide-react";
+import {
+  FileText,
+  Trash2,
+  Calendar,
+  File as FileIconGeneric,
+} from "lucide-react";
 
 export default async function PaginaDetalhesPasta(props: {
   params: Promise<{ id: string }>;
@@ -31,64 +36,94 @@ export default async function PaginaDetalhesPasta(props: {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50">
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+    <div className="pb-20 max-w-[1600px] mx-auto p-6 lg:p-8">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <BackButton href="/arquivos" />
-          <h1 className="text-3xl font-bold mt-3 text-gray-900">
-            {folder.name}
-          </h1>
-          <p className="text-gray-500 mt-1">{folder.files.length} arquivos</p>
+          <div className="mt-4">
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+              {folder.name}
+            </h1>
+            <p className="text-slate-500 mt-1">
+              {folder.files.length} arquivos disponíveis
+            </p>
+          </div>
         </div>
 
         {permissions.canManageDocumentos && (
-          <DeleteFolderButton folderId={folder.id} folderName={folder.name} />
+          <div className="flex gap-3">
+            <DeleteFolderButton folderId={folder.id} folderName={folder.name} />
+            <AddFileSection folderId={id} />
+          </div>
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="grid grid-cols-12 gap-4 p-4 bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-500">
-          <div className="col-span-6">NOME DO DOCUMENTO</div>
-          <div className="col-span-2">TIPO</div>
-          <div className="col-span-4 flex justify-between items-center">
-            <span>DATA DE MODIFICAÇÃO</span>
-            {permissions.canManageDocumentos && (
-              <AddFileSection folderId={id} />
-            )}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        {folder.files.length > 0 && (
+          <div className="hidden md:grid grid-cols-12 gap-6 p-6 bg-slate-50/50 border-b border-gray-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <div className="col-span-6">Arquivo</div>
+            <div className="col-span-3">Tipo</div>
+            <div className="col-span-3 text-right">Ações</div>
           </div>
-        </div>
+        )}
 
         <div className="divide-y divide-gray-100">
           {folder.files.map((file) => (
             <div
               key={file.id}
-              className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-gray-50 transition"
+              className="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 items-center hover:bg-slate-50/50 transition-colors group"
             >
-              <div className="col-span-6 flex items-center gap-3">
-                <FileIcon className="text-red-500" size={20} />
-                <a
-                  href={
-                    file.type === "PDF" ? `/api/files/${file.id}` : file.url
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-gray-900 hover:underline truncate"
+              <div className="col-span-1 md:col-span-6 flex items-center gap-4">
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    file.type === "PDF"
+                      ? "bg-red-50 text-red-500"
+                      : "bg-blue-50 text-blue-500"
+                  }`}
                 >
-                  {file.name}
-                </a>
+                  {file.type === "PDF" ? (
+                    <FileText size={20} />
+                  ) : (
+                    <FileIconGeneric size={20} />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <a
+                    href={
+                      file.type === "PDF" ? `/api/files/${file.id}` : file.url
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-slate-900 hover:text-[#0b3566] hover:underline truncate block text-lg md:text-base leading-tight md:leading-normal"
+                  >
+                    {file.name}
+                  </a>
+                  <span className="md:hidden text-xs text-slate-500 font-medium mt-1 inline-flex items-center gap-1">
+                    <Calendar size={12} />
+                    {file.updatedAt.toLocaleDateString("pt-BR")}
+                  </span>
+                </div>
               </div>
-              <div className="col-span-2 text-sm text-gray-500">
-                {file.type}
+
+              <div className="col-span-1 md:col-span-3 hidden md:flex items-center text-sm font-medium text-slate-500">
+                <span className="bg-slate-100 px-2 py-1 rounded text-xs font-bold text-slate-600">
+                  {file.type}
+                </span>
               </div>
-              <div className="col-span-4 flex justify-between items-center text-sm text-gray-500">
-                <span>{file.updatedAt.toLocaleDateString("pt-BR")}</span>
+
+              <div className="col-span-1 md:col-span-3 flex justify-between md:justify-end items-center gap-4 text-sm text-slate-500">
+                <span className="hidden md:inline font-mono text-xs">
+                  {file.updatedAt.toLocaleDateString("pt-BR")}
+                </span>
+
                 {permissions.canManageDocumentos && (
                   <form action={handleDeleteFile.bind(null, file.id)}>
                     <button
                       type="submit"
-                      className="text-gray-400 hover:text-red-600 p-1"
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Excluir arquivo"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
                   </form>
                 )}
@@ -97,8 +132,16 @@ export default async function PaginaDetalhesPasta(props: {
           ))}
 
           {folder.files.length === 0 && (
-            <div className="p-8 text-center text-gray-500">
-              Nenhum arquivo nesta pasta.
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-300">
+                <FileText size={32} />
+              </div>
+              <p className="text-slate-900 font-bold mb-1">
+                Esta pasta está vazia
+              </p>
+              <p className="text-slate-500 text-sm">
+                Adicione documentos para começar.
+              </p>
             </div>
           )}
         </div>
