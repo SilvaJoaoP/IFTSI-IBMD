@@ -4,19 +4,19 @@ import { getPermissionsForRole } from "@/lib/permissions";
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { LogoutButton } from "@/components/LogoutButton";
-import { 
-  Search, 
-  LogOut, 
-  PieChart, 
-  Users, 
-  FileText, 
-  Calendar, 
+import {
+  Search,
+  LogOut,
+  PieChart,
+  Users,
+  FileText,
+  Calendar,
   CalendarDays,
-  Settings, 
-  Image as ImageIcon, 
+  Settings,
+  Image as ImageIcon,
   ChevronRight,
-  Bell
-} from 'lucide-react';
+  Bell,
+} from "lucide-react";
 
 function DashboardCard({
   href,
@@ -36,23 +36,30 @@ function DashboardCard({
       href={href}
       className="group flex flex-col p-6 bg-white rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-100"
     >
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors ${colorClass}`}>
+      <div
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors ${colorClass}`}
+      >
         <Icon className="w-7 h-7" />
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-800 transition-colors">
         {title}
       </h3>
-      {description && <p className="text-gray-500 text-sm mb-6 leading-relaxed line-clamp-2">{description}</p>}
-      
+      {description && (
+        <p className="text-gray-500 text-sm mb-6 leading-relaxed line-clamp-2">
+          {description}
+        </p>
+      )}
+
       <div className="mt-auto flex items-center text-sm font-bold text-gray-400 group-hover:text-blue-600 transition-colors">
-        Acessar <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+        Acessar{" "}
+        <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
       </div>
     </Link>
   );
 }
 
 function ProfileButton({ nome }: { nome: string }) {
-  const initial = nome ? nome.charAt(0).toUpperCase() : 'U';
+  const initial = nome ? nome.charAt(0).toUpperCase() : "U";
   return (
     <Link
       href="/perfil"
@@ -62,8 +69,10 @@ function ProfileButton({ nome }: { nome: string }) {
         {initial}
       </div>
       <div className="hidden sm:flex flex-col items-start">
-        <span className="text-xs text-gray-500 font-medium">Conta</span>
-        <span className="text-sm font-bold text-gray-800 group-hover:text-blue-800 leading-none">{nome.split(' ')[0]}</span>
+        <span className="text-xs text-gray-500 font-medium">Perfil</span>
+        <span className="text-sm font-bold text-gray-800 group-hover:text-blue-800 leading-none">
+          {nome.split(" ")[0]}
+        </span>
       </div>
     </Link>
   );
@@ -71,12 +80,12 @@ function ProfileButton({ nome }: { nome: string }) {
 
 function LogoutSubmitButton() {
   return (
-    <button 
-      type="submit" 
-      className="p-3 rounded-full text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200 border border-transparent hover:border-red-100"
+    <button
+      type="submit"
+      className="w-12 h-12 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm group"
       aria-label="Sair da conta"
     >
-      <LogOut className="h-5 w-5" />
+      <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
     </button>
   );
 }
@@ -98,33 +107,29 @@ export default async function PaginaDashboard() {
 
   const userRole = session.user.cargo as Role;
   const userName = session.user.nome || "Usuário";
-  const permissions = getPermissionsForRole(userRole);
+  const permissions = getPermissionsForRole(
+    userRole,
+    session.user.status,
+    session.user.suspendedUntil,
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50"> 
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-6 lg:p-10">
-        
         <header className="flex flex-col md:flex-row justify-between items-center py-4 mb-12 gap-6 md:gap-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#0b3566] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-900/20">
-              I
+              †
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">IMBD Gestão</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+              Gestão IBMD
+            </h1>
           </div>
-          
+
           <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-            <div className="relative hidden md:block">
-              <input
-                type="search"
-                placeholder="Buscar..."
-                className="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-full w-64 text-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all outline-none"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            </div>
-            
-            <button className="p-2.5 rounded-full bg-white border border-gray-200 text-gray-500 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-all shadow-sm">
+            {/* <button className="p-2.5 rounded-full bg-white border border-gray-200 text-gray-500 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-all shadow-sm">
               <Bell className="w-5 h-5" />
-            </button>
+            </button> */}
             <ProfileButton nome={userName} />
             <StyledLogoutButton />
           </div>
@@ -133,18 +138,18 @@ export default async function PaginaDashboard() {
         {/* Hero Section */}
         <section className="mb-14">
           <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-gray-100 relative overflow-hidden">
-             {/* Decorative background blob */}
+            {/* Decorative background blob */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60 pointer-events-none"></div>
-            
+
             <div className="relative z-10 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6">
                 Painel Administrativo
               </div>
               <h1 className="text-4xl md:text-5xl font-extrabold text-[#0b3566] mb-4 leading-tight">
-                Olá, {userName.split(' ')[0]}.
+                Olá, {userName.split(" ")[0]}.
               </h1>
-              <p className="text-lg text-gray-500 mb-8 max-w-lg leading-relaxed">
-                Bem-vindo ao sistema de gestão da Igreja Batista Monte de Deus. Gerencie membros, escalas e documentos com facilidade.
+              <p className="text-lg text-gray-500 mb-8 max-w-2xl leading-relaxed">
+                Bem-vindo ao sistema de gestão da Igreja Batista Monte de Deus.
               </p>
             </div>
           </div>
@@ -157,9 +162,8 @@ export default async function PaginaDashboard() {
               Menu de Acesso
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            
             {permissions.canSeeRelatorioFinanceiro && (
               <DashboardCard
                 href="/planilhas"
@@ -169,7 +173,7 @@ export default async function PaginaDashboard() {
                 colorClass="bg-emerald-50 text-emerald-600"
               />
             )}
-            
+
             {permissions.canSeeRelatorioMembros && (
               <DashboardCard
                 href="/membros"
@@ -179,7 +183,7 @@ export default async function PaginaDashboard() {
                 colorClass="bg-blue-50 text-blue-600"
               />
             )}
-            
+
             {permissions.canSeeDocumentos && (
               <DashboardCard
                 href="/arquivos"
@@ -189,7 +193,7 @@ export default async function PaginaDashboard() {
                 colorClass="bg-amber-50 text-amber-600"
               />
             )}
-            
+
             {permissions.canSeeCalendarioAnual && (
               <DashboardCard
                 href="/calendario"
@@ -199,17 +203,17 @@ export default async function PaginaDashboard() {
                 colorClass="bg-purple-50 text-purple-600"
               />
             )}
-            
+
             {permissions.canSeeEscalas && (
               <DashboardCard
-                href="/calendario"
+                href="/escalas"
                 title="Escalas"
                 description="Organização de escalas dos ministérios."
                 icon={CalendarDays}
                 colorClass="bg-rose-50 text-rose-600"
               />
             )}
-            
+
             {permissions.canSeeGestaoCargos && (
               <DashboardCard
                 href="/gestao-cargos"
@@ -219,7 +223,7 @@ export default async function PaginaDashboard() {
                 colorClass="bg-slate-100 text-slate-700"
               />
             )}
-            
+
             {permissions.canSeeGaleriaMidia && (
               <DashboardCard
                 href="/midia"
@@ -229,20 +233,27 @@ export default async function PaginaDashboard() {
                 colorClass="bg-indigo-50 text-indigo-600"
               />
             )}
-          </div>
-        </section>
 
-        <section className="mt-16">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Atividades Recentes</h2>
-            <button className="text-sm font-semibold text-blue-600 hover:text-blue-700">Ver tudo</button>
-          </div>
-          <div className="p-12 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <Bell className="w-6 h-6 text-gray-300" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">Tudo limpo por aqui</h3>
-            <p className="text-gray-500">Nenhuma atividade recente registrada no sistema.</p>
+            {!permissions.canSeeRelatorioFinanceiro &&
+              !permissions.canSeeRelatorioMembros &&
+              !permissions.canSeeDocumentos &&
+              !permissions.canSeeCalendarioAnual &&
+              !permissions.canSeeEscalas &&
+              !permissions.canSeeGestaoCargos &&
+              !permissions.canSeeGaleriaMidia && (
+                <div className="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col items-center justify-center p-12 text-center bg-white rounded-3xl border border-dashed border-slate-300">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 mb-4">
+                    <LogOut size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">
+                    Acesso Restrito
+                  </h3>
+                  <p className="text-slate-500 max-w-md">
+                    Você não possui permissões ativas para acessar os módulos do
+                    sistema no momento. Entre em contato com a administração.
+                  </p>
+                </div>
+              )}
           </div>
         </section>
       </div>

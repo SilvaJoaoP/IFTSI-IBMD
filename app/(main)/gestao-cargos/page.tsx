@@ -15,6 +15,7 @@ import {
   Mail,
   IdCard,
 } from "lucide-react";
+import { UserStatusManager } from "@/components/UserStatusManager";
 
 function DeleteUserButton({ id }: { id: string }) {
   const deleteUserWithId = async () => {
@@ -26,7 +27,7 @@ function DeleteUserButton({ id }: { id: string }) {
     <form action={deleteUserWithId}>
       <button
         type="submit"
-        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+        className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-colors border border-red-100 hover:border-red-600"
         title="Deletar usuário"
       >
         <Trash2 size={18} />
@@ -248,15 +249,23 @@ export default async function PaginaGestaoCargos() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 pl-16 md:pl-0">
-                    <Link
-                      href={`/gestao-cargos/${user.id}/edit`}
-                      className="p-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-colors border border-blue-100 hover:border-blue-600"
-                      title="Editar"
-                    >
-                      <Edit size={18} />
-                    </Link>
-                    <DeleteUserButton id={user.id} />
+                  <div className="flex flex-col md:flex-row items-center gap-3 pl-16 md:pl-0">
+                    <UserStatusManager
+                      userId={user.id}
+                      currentStatus={user.status}
+                      suspendedUntil={user.suspendedUntil}
+                    />
+                    <div className="hidden md:block w-px h-8 bg-slate-200 mx-2"></div>
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/gestao-cargos/${user.id}/edit`}
+                        className="p-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-colors border border-blue-100 hover:border-blue-600"
+                        title="Editar"
+                      >
+                        <Edit size={18} />
+                      </Link>
+                      <DeleteUserButton id={user.id} />
+                    </div>
                   </div>
                 </div>
               ))}

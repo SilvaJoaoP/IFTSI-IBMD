@@ -116,9 +116,9 @@ export function ImageInput({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 50 * 1024 * 1024) {
         alert(
-          "Arquivo muito grande (Max 5MB). Use Link Externo para arquivos maiores.",
+          "Arquivo muito grande (Max 50MB). Use Link Externo para arquivos maiores.",
         );
         e.target.value = "";
         return;
@@ -128,7 +128,12 @@ export function ImageInput({
         const base64 = await toBase64(file);
         setInputValue(base64);
         setPreview(base64);
-        setDetectedType("IMAGEM");
+
+        if (file.type.startsWith("video/")) {
+          setDetectedType("VIDEO");
+        } else {
+          setDetectedType("IMAGEM");
+        }
       } catch (err) {
         console.error(err);
         alert("Erro ao ler arquivo");
@@ -205,15 +210,10 @@ export function ImageInput({
               <p className="mb-1 text-sm font-bold">
                 <span className="underline">Clique para upload</span>
               </p>
-              <p className="text-xs opacity-70">JPG, PNG, GIF (Max 5MB)</p>
+              <p className="text-xs opacity-70">Aquivos até 50MB</p>
             </div>
           )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
+          <input type="file" onChange={handleFileChange} className="hidden" />
         </label>
       )}
 

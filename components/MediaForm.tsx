@@ -20,9 +20,11 @@ export function MediaForm({ albumId, action }: MediaFormProps) {
     try {
       await boundAction(formData);
       setResetKey((prev) => prev + 1);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Erro ao enviar mídia. Verifique o tamanho do arquivo.");
+      alert(
+        `Erro ao enviar mídia: ${error.message || "Tamanho excedido ou erro desconhecido"}`,
+      );
     } finally {
       setIsUploading(false);
     }

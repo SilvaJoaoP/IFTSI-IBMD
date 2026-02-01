@@ -13,18 +13,27 @@ enum Role {
   SECRETARIO
   DIACONO
   MIDIA
+  MEMBRO
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  nome      String
-  cpf       String?   @unique
-  senha     String
-  cargo     Role      
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  
+  id             String        @id @default(cuid())
+  email          String        @unique
+  nome           String
+  cpf            String?       @unique
+  senha          String
+  cargo          Role
+  status         AccountStatus @default(ACTIVE)
+  suspendedUntil DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  escalas        EscalaItem[]
 }
 
 enum SituacaoMembro {
@@ -90,19 +99,40 @@ model TransacaoFinanceira {
   data        DateTime  @default(now())
 }
 
-// Modelo de Eventos (Pode ser usado no futuro Calendário)
+// Modelo de Eventos
 model Evento {
   id          String    @id @default(cuid())
-  nome        String
+  titulo      String
+  descricao   String?
+  links       String?   // Vamos armazenar como JSON string ou texto
   dataInicio  DateTime
   dataFim     DateTime?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Escala {
-  id        String    @id @default(cuid())
+  id        String       @id @default(cuid())
   titulo    String
   descricao String?
   data      DateTime
+  items     EscalaItem[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model EscalaItem {
+  id        String   @id @default(cuid())
+  escalaId  String
+  usuarioId String
+  funcao    String
+  
+  escala    Escala   @relation(fields: [escalaId], references: [id], onDelete: Cascade)
+  usuario   User     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([escalaId])
+  @@index([usuarioId])
 }
 
 model Midia {

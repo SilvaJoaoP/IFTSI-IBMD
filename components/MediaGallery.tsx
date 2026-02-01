@@ -106,16 +106,6 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
                     </div>
                   )}
 
-                  {/* Play Icon */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <PlayCircle
-                        size={28}
-                        className="text-white fill-current"
-                      />
-                    </div>
-                  </div>
-
                   {/* Badge */}
                   <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white px-2.5 py-1 text-[10px] uppercase font-bold rounded-lg z-10 pointer-events-none border border-white/10">
                     {isLocal ? "Arquivo" : "Drive"}
