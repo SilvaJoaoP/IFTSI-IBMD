@@ -8,7 +8,10 @@ interface DeleteRegistroButtonProps {
   planilhaId: string;
 }
 
-export function DeleteRegistroButton({ id, planilhaId }: DeleteRegistroButtonProps) {
+export function DeleteRegistroButton({
+  id,
+  planilhaId,
+}: DeleteRegistroButtonProps) {
   return (
     <button
       onClick={async () => {
@@ -16,7 +19,7 @@ export function DeleteRegistroButton({ id, planilhaId }: DeleteRegistroButtonPro
           await deleteRegistro(id, planilhaId);
         }
       }}
-      className="text-red-500 hover:text-red-700 p-1"
+      className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
       title="Excluir"
     >
       <Trash2 size={18} />

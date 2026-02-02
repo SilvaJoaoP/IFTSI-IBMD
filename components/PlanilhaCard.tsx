@@ -32,7 +32,9 @@ export function PlanilhaCard({ id, mes, ano }: PlanilhaCardProps) {
   }, []);
 
   const handleDelete = async () => {
-    if (confirm(`Tem certeza que deseja excluir a planilha de ${mes}/${ano}?`)) {
+    if (
+      confirm(`Tem certeza que deseja excluir a planilha de ${mes}/${ano}?`)
+    ) {
       await deletePlanilha(id);
     }
     setIsMenuOpen(false);
@@ -47,23 +49,26 @@ export function PlanilhaCard({ id, mes, ano }: PlanilhaCardProps) {
 
   return (
     <>
-      <div className="group relative bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-200 transition-all duration-200 overflow-hidden flex flex-col">
+      <div className="group relative bg-white rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 hover:border-blue-100 transition-all duration-300 overflow-hidden flex flex-col">
         {/* Card Image Area (Google Sheets Style) */}
-        <Link href={`/planilhas/${id}`} className="block h-40 bg-gray-50 relative border-b border-gray-100 group-hover:bg-blue-50/30 transition-colors">
-           <div className="absolute inset-0 flex items-center justify-center">
-              <FileSpreadsheet className="w-16 h-16 text-green-600 opacity-80 group-hover:scale-110 transition-transform duration-300" />
-           </div>
+        <Link
+          href={`/planilhas/${id}`}
+          className="block h-40 bg-blue-50/30 relative border-b border-gray-50 group-hover:bg-blue-50/80 transition-colors"
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+              <FileSpreadsheet className="w-8 h-8 text-blue-600" />
+            </div>
+          </div>
         </Link>
 
         {/* Card Content */}
-        <div className="p-4 flex items-center justify-between bg-white">
+        <div className="p-5 flex items-center justify-between bg-white pt-6">
           <Link href={`/planilhas/${id}`} className="flex-1 min-w-0">
-            <h3 className="text-base font-medium text-gray-900 truncate group-hover:text-blue-700 transition-colors">
+            <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-blue-700 transition-colors">
               {mes} {ano}
             </h3>
-            <p className="text-xs text-gray-500 mt-1">
-              Planilha Financeira
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Relatório Mensal</p>
           </Link>
 
           {/* Kebab Menu */}
@@ -107,26 +112,44 @@ export function PlanilhaCard({ id, mes, ano }: PlanilhaCardProps) {
       {isRenameModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in zoom-in-95 duration-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Renomear Planilha</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Renomear Planilha
+            </h2>
             <form onSubmit={handleRename}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mês</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mês
+                  </label>
                   <select
                     value={newMes}
                     onChange={(e) => setNewMes(e.target.value)}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   >
                     {[
-                      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-                      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+                      "Janeiro",
+                      "Fevereiro",
+                      "Março",
+                      "Abril",
+                      "Maio",
+                      "Junho",
+                      "Julho",
+                      "Agosto",
+                      "Setembro",
+                      "Outubro",
+                      "Novembro",
+                      "Dezembro",
                     ].map((m) => (
-                      <option key={m} value={m}>{m}</option>
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ano</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ano
+                  </label>
                   <input
                     type="number"
                     value={newAno}

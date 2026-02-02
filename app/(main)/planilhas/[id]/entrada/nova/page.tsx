@@ -9,16 +9,28 @@ export default function NovaEntradaPage() {
   const id = params?.id as string;
 
   return (
-    <div>
-      <BackButton href={`/planilhas/${id}`} />
-      <div className="max-w-md mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow-xl">
-        <h1 className="text-2xl font-bold text-white mb-6 text-center">Registro de Entrada</h1>
-        <form action={createRegistroFinanceiro}>
+    <div className="max-w-[1000px] mx-auto p-6 lg:p-8">
+      <div className="mb-8">
+        <BackButton href={`/planilhas/${id}`} />
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-sm border border-gray-100 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">
+          Registro de Entrada
+        </h1>
+        <p className="text-slate-500 mb-8">
+          Adicione uma nova entrada financeira na planilha.
+        </p>
+
+        <form action={createRegistroFinanceiro} className="space-y-6">
           <input type="hidden" name="planilhaId" value={id} />
           <input type="hidden" name="tipo" value="ENTRADA" />
-          
-          <div className="mb-4">
-            <label htmlFor="value" className="block text-sm font-medium text-gray-300">
+
+          <div>
+            <label
+              htmlFor="value"
+              className="block text-sm font-bold text-slate-700 mb-2"
+            >
               Valor
             </label>
             <input
@@ -26,52 +38,61 @@ export default function NovaEntradaPage() {
               id="value"
               name="value"
               step="0.01"
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full border border-gray-200 rounded-xl p-3 text-lg focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none bg-slate-50 text-slate-900 transition-all placeholder:text-slate-400 font-bold text-emerald-600"
               required
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-300">
+          <div>
+            <label
+              htmlFor="date"
+              className="block text-sm font-bold text-slate-700 mb-2"
+            >
               Data
             </label>
             <input
               type="date"
               id="date"
               name="date"
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full border border-gray-200 rounded-xl p-3 focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none bg-slate-50 text-slate-900 transition-all"
               required
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-300">
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-bold text-slate-700 mb-2"
+            >
               Descrição
             </label>
             <input
               type="text"
               id="description"
               name="description"
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full border border-gray-200 rounded-xl p-3 focus:ring-4 focus:ring-blue-50 focus:border-blue-500 outline-none bg-slate-50 text-slate-900 transition-all placeholder:text-slate-400"
               required
             />
           </div>
-          
-          <div className="mb-6 flex items-center">
+
+          <div className="flex items-center p-4 bg-slate-50 rounded-xl border border-gray-100">
             <input
               type="checkbox"
               id="contaDigital"
               name="contaDigital"
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded transition-all"
             />
-            <label htmlFor="contaDigital" className="ml-2 block text-sm text-gray-300">
+            <label
+              htmlFor="contaDigital"
+              className="ml-3 block text-sm font-medium text-slate-700"
+            >
               Registro da Conta Digital
             </label>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-6 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all active:scale-95 duration-200 mt-4"
           >
-            Registrar
+            Registrar Entrada
           </button>
         </form>
       </div>
