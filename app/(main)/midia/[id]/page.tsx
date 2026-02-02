@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 import { MediaForm } from "@/components/MediaForm";
 import { MediaGallery } from "@/components/MediaGallery";
 import Link from "next/link";
+import { Edit, Image as ImageIcon } from "lucide-react";
 
 export default async function PaginaDetalhesAlbum(props: {
   params: Promise<{ id: string }>;
@@ -36,53 +37,65 @@ export default async function PaginaDetalhesAlbum(props: {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
-        <div>
-          <BackButton href="/midia" />
-          <h1 className="text-3xl font-bold mt-3 text-gray-900">
-            {album.titulo}
-          </h1>
-          <p className="text-gray-500 mt-1">
-            {album.midias.length} mídias na galeria
-          </p>
+    <div className="min-h-screen bg-slate-50/50 pb-20">
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+          <div className="flex gap-4">
+            <div className="mt-1">
+              <BackButton href="/midia" />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-[#0b3566]">
+                  <ImageIcon size={24} />
+                </div>
+                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {album.titulo}
+                </h1>
+              </div>
+              <div className="flex items-center gap-2 text-slate-500 text-sm font-medium ml-1">
+                <span className="bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md text-xs">
+                  Álbum
+                </span>
+                <span>•</span>
+                <span>{album.midias.length} itens na galeria</span>
+              </div>
+            </div>
+          </div>
+
+          {permissions.canManageMidia && (
+            <div className="flex items-center gap-3">
+              <Link
+                href={`/midia/${album.id}/edit`}
+                className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm group"
+              >
+                <Edit
+                  size={18}
+                  className="text-slate-400 group-hover:text-[#0b3566] transition-colors"
+                />
+                Editar Álbum
+              </Link>
+
+              <div className="h-8 w-px bg-slate-300 mx-1" />
+
+              <DeleteAlbumButton
+                albumId={album.id}
+                deleteAction={deleteAlbumAction}
+              />
+            </div>
+          )}
         </div>
 
         {permissions.canManageMidia && (
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/midia/${album.id}/edit`}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-            >
-              ✏️ Editar Capa/Nome
-            </Link>
-
-            <DeleteAlbumButton
-              albumId={album.id}
-              deleteAction={deleteAlbumAction}
-            />
-          </div>
+          <MediaForm albumId={album.id} action={addMediaAction} />
         )}
-      </div>
 
-      {permissions.canManageMidia && (
-        <MediaForm albumId={album.id} action={addMediaAction} />
-      )}
-
-      {album.midias.length > 0 ? (
         <MediaGallery
           midias={album.midias}
           onDelete={permissions.canManageMidia ? handleDeleteMedia : undefined}
         />
-      ) : (
-        <div className="text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 mt-6">
-          <div className="text-4xl mb-4">🖼️</div>
-          <h3 className="text-lg font-medium text-gray-900">Álbum Vazio</h3>
-          <p className="text-gray-500">
-            Adicione fotos ou vídeos para começar a galeria.
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

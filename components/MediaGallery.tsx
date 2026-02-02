@@ -26,7 +26,8 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
 
   const getDriveEmbedUrl = (url: string) => {
     const id = getDriveId(url);
-    return id ? `https://drive.google.com/file/d/${id}/preview` : url;
+    if (!id) return url;
+    return `https://drive.google.com/file/d/${id}/preview`;
   };
 
   const getDriveThumbnailUrl = (url: string) => {
@@ -43,24 +44,36 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
     e.currentTarget.currentTime = 0;
   };
 
+  if (midias.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl text-slate-400 min-h-[300px]">
+        <div className="bg-slate-100 p-4 rounded-full mb-3">
+          <Video size={32} className="text-slate-300" />
+        </div>
+        <p className="text-lg font-medium">Nenhuma mídia encontrada</p>
+        <p className="text-sm">Adicione fotos ou vídeos acima para começar.</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
         {midias.map((midia) => {
           const isLocal = midia.tipo === "VIDEO" && isLocalVideo(midia.url);
 
           return (
             <div
               key={midia.id}
-              className="relative group bg-gray-900 rounded-lg overflow-hidden aspect-square border border-gray-200 shadow-sm"
+              className="relative group bg-slate-900 rounded-3xl overflow-hidden aspect-square border-4 border-white shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               {midia.tipo === "VIDEO" ? (
-                <div className="w-full h-full relative">
+                <div className="w-full h-full relative bg-black">
                   {isLocal ? (
                     // VÍDEO LOCAL
                     <video
                       src={midia.url}
-                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                       muted
                       loop
                       playsInline
@@ -69,69 +82,71 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
                       onMouseLeave={handleMouseLeave}
                     />
                   ) : (
-                    // VÍDEO DRIVE COM THUMBNAIL
+                    // VÍDEO DRIVE
                     <div className="w-full h-full relative">
                       <img
                         src={getDriveThumbnailUrl(midia.url)}
                         alt="Capa do Vídeo"
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        referrerPolicy="no-referrer"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                           e.currentTarget.nextElementSibling?.classList.remove(
-                            "hidden"
+                            "hidden",
                           );
                         }}
                       />
 
-                      {/* Fallback caso a thumbnail falhe (inicialmente oculto com 'hidden') */}
-                      <div className="hidden absolute inset-0 flex-col items-center justify-center bg-gray-800 text-gray-400">
-                        <Video size={48} className="mb-2 opacity-50" />
-                        <span className="text-[10px] uppercase font-bold">
-                          Sem Capa
+                      <div className="hidden absolute inset-0 flex-col items-center justify-center bg-slate-800 text-slate-400">
+                        <Video size={32} className="mb-2 opacity-50" />
+                        <span className="text-[10px] uppercase font-bold tracking-wider">
+                          Vídeo
                         </span>
                       </div>
                     </div>
                   )}
 
-                  {/* Ícone Play (Sempre visível em cima da capa) */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <PlayCircle
-                      size={48}
-                      className="text-white/80 drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-
                   {/* Badge */}
-                  <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-0.5 text-[10px] uppercase font-bold rounded-full z-10 pointer-events-none">
-                    {isLocal ? "Vídeo" : "Drive"}
+                  <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white px-2.5 py-1 text-[10px] uppercase font-bold rounded-lg z-10 pointer-events-none border border-white/10">
+                    {isLocal ? "Arquivo" : "Drive"}
                   </div>
                 </div>
               ) : (
-                <img
-                  src={midia.url}
-                  alt="Mídia"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                <div className="w-full h-full relative">
+                  <img
+                    src={midia.url}
+                    alt="Mídia"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
               )}
 
-              {/* OVERLAY DE AÇÕES */}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 pointer-events-none">
+              {/* OVERLAY ACTIONS */}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
                 <button
                   onClick={() => setSelectedMedia(midia)}
-                  className="bg-white text-blue-900 px-4 py-2 rounded-full font-bold text-sm hover:bg-gray-100 flex items-center gap-2 transition-transform hover:scale-105 shadow-md pointer-events-auto"
+                  title="Visualizar"
+                  className="bg-white/90 hover:bg-white text-slate-900 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-lg"
                 >
-                  <Eye size={16} />
+                  <Eye size={18} />
                 </button>
 
                 {onDelete && (
                   <button
                     onClick={() => {
-                      if (confirm("Tem certeza?")) onDelete(midia.id);
+                      if (
+                        confirm("Tem certeza que deseja remover esta mídia?")
+                      ) {
+                        onDelete(midia.id);
+                      }
                     }}
-                    className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-transform hover:scale-105 shadow-md pointer-events-auto"
+                    title="Excluir"
+                    className="bg-red-500/90 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-lg"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={18} />
                   </button>
                 )}
               </div>
@@ -142,25 +157,31 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
 
       {/* MODAL */}
       {selectedMedia && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/95 backdrop-blur-md p-4 sm:p-8 animate-in fade-in duration-200"
+          onClick={() => setSelectedMedia(null)}
+        >
           <button
             onClick={() => setSelectedMedia(null)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 z-50 bg-gray-800/50 p-2 rounded-full transition-colors"
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all"
           >
-            <X size={32} />
+            <X size={28} />
           </button>
 
-          <div className="relative w-full max-w-6xl h-full flex items-center justify-center p-4">
+          <div
+            className="relative w-full max-w-6xl h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
             {selectedMedia.tipo === "VIDEO" ? (
               isLocalVideo(selectedMedia.url) ? (
                 <video
                   src={selectedMedia.url}
                   controls
                   autoPlay
-                  className="max-w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"
+                  className="max-w-full max-h-[85vh] rounded-2xl shadow-2xl bg-black border border-white/10"
                 />
               ) : (
-                <div className="w-full h-full max-h-[85vh] aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-800 flex flex-col">
+                <div className="w-full h-full max-h-[85vh] aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col">
                   <iframe
                     src={getDriveEmbedUrl(selectedMedia.url)}
                     className="w-full h-full flex-1"
@@ -168,14 +189,17 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
                     allow="autoplay; fullscreen"
                     allowFullScreen
                   />
-                  <div className="bg-gray-900 text-white p-2 text-center text-xs flex justify-center gap-2">
+                  <div className="bg-slate-950/50 backdrop-blur text-white p-3 text-center text-sm flex justify-center gap-3 border-t border-white/10">
+                    <span className="text-white/60">
+                      Este vídeo está hospedado no Google Drive.
+                    </span>
                     <a
                       href={selectedMedia.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-blue-400 hover:underline flex items-center gap-1"
+                      className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 font-medium"
                     >
-                      Abrir no Drive <ExternalLink size={10} />
+                      Abrir no Drive <ExternalLink size={14} />
                     </a>
                   </div>
                 </div>
@@ -184,7 +208,7 @@ export function MediaGallery({ midias, onDelete }: MediaGalleryProps) {
               <img
                 src={selectedMedia.url}
                 alt="Visualização"
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
               />
             )}
           </div>

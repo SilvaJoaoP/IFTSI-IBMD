@@ -60,60 +60,62 @@ export function AddFileSection({ folderId }: { folderId: string }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1.5 rounded-md hover:bg-blue-50 transition"
+        className="flex items-center gap-2 bg-[#0b3566] hover:bg-[#092b52] text-white text-sm font-bold px-4 py-2 rounded-xl shadow-lg shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
       >
-        <Plus size={16} />
-        ADICIONAR
+        <Plus size={18} className="text-white" />
+        ADICIONAR ARQUIVO
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
-              <h3 className="font-semibold text-gray-900">Adicionar Arquivo</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-white/50">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              <h3 className="text-xl font-bold text-slate-900">
+                Adicionar Arquivo
+              </h3>
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setMode("select");
                 }}
-                className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-200 rounded-full transition"
+                className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100/50 rounded-full transition"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-8">
               {mode === "select" && (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <button
                     onClick={() => setMode("upload")}
-                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition text-left group"
+                    className="w-full flex items-center gap-5 p-5 rounded-2xl border border-gray-200 hover:border-blue-500 hover:bg-blue-50/50 transition-all text-left group hover:shadow-md"
                   >
-                    <div className="bg-blue-100 p-3 rounded-full text-blue-600 group-hover:bg-blue-200 transition">
-                      <Upload size={20} />
+                    <div className="bg-blue-100 p-4 rounded-2xl text-blue-600 group-hover:scale-110 transition-transform">
+                      <Upload size={24} />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">
+                      <div className="font-bold text-slate-900 text-lg">
                         Upload PDF
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Do seu computador
+                      <div className="text-sm text-slate-500">
+                        Selecione um arquivo do seu computador
                       </div>
                     </div>
                   </button>
                   <button
                     onClick={() => setMode("link")}
-                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-green-500 hover:bg-green-50 transition text-left group"
+                    className="w-full flex items-center gap-5 p-5 rounded-2xl border border-gray-200 hover:border-green-500 hover:bg-green-50/50 transition-all text-left group hover:shadow-md"
                   >
-                    <div className="bg-green-100 p-3 rounded-full text-green-600 group-hover:bg-green-200 transition">
-                      <LinkIcon size={20} />
+                    <div className="bg-green-100 p-4 rounded-2xl text-green-600 group-hover:scale-110 transition-transform">
+                      <LinkIcon size={24} />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">
+                      <div className="font-bold text-slate-900 text-lg">
                         Link Externo
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Google Drive, Dropbox, etc.
+                      <div className="text-sm text-slate-500">
+                        Cole um link (Google Drive, Dropbox, etc)
                       </div>
                     </div>
                   </button>
@@ -121,82 +123,101 @@ export function AddFileSection({ folderId }: { folderId: string }) {
               )}
 
               {mode === "upload" && (
-                <form action={handleUpload} className="space-y-4">
+                <form
+                  action={handleUpload}
+                  className="space-y-6 animate-in slide-in-from-right-4 duration-300"
+                >
                   <input type="hidden" name="type" value="PDF" />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="space-y-4">
+                    <label className="block text-sm font-bold text-slate-700">
                       Nome do Arquivo
                     </label>
                     <input
                       name="name"
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      placeholder="Ex: Relatório 2025"
+                      placeholder="Ex: Estatuto Social 2024"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700">
                       Arquivo PDF
                     </label>
-                    <input
-                      type="file"
-                      name="file"
-                      accept="application/pdf"
-                      required
-                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer border border-gray-200 rounded-lg"
-                    />
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer hover:bg-slate-50/50 hover:border-blue-400 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 mb-3 text-slate-400" />
+                        <p className="mb-2 text-sm text-slate-500">
+                          <span className="font-bold">
+                            Clique para selecionar
+                          </span>
+                        </p>
+                        <p className="text-xs text-slate-400">PDF (MAX. 4MB)</p>
+                      </div>
+                      <input
+                        name="file"
+                        type="file"
+                        required
+                        accept="application/pdf"
+                        className="hidden"
+                      />
+                    </label>
                   </div>
 
                   <div className="flex gap-3 pt-4">
                     <button
                       type="button"
                       onClick={() => setMode("select")}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
                     >
                       Voltar
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition shadow-sm"
+                      className="flex-1 px-4 py-3 text-sm font-bold text-white bg-[#0b3566] hover:bg-[#092b52] rounded-xl shadow-lg shadow-blue-900/10 transition-all flex items-center justify-center gap-2"
                     >
-                      {loading && (
-                        <Loader2 className="animate-spin" size={16} />
+                      {loading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Upload size={18} />
                       )}
-                      Salvar
+                      {loading ? "Enviando..." : "Enviar PDF"}
                     </button>
                   </div>
                 </form>
               )}
 
               {mode === "link" && (
-                <form action={handleUpload} className="space-y-4">
+                <form
+                  action={handleUpload}
+                  className="space-y-6 animate-in slide-in-from-right-4 duration-300"
+                >
                   <input type="hidden" name="type" value="LINK" />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nome do Arquivo
+                  <div className="space-y-4">
+                    <label className="block text-sm font-bold text-slate-700">
+                      Nome do Link
                     </label>
                     <input
                       name="name"
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      placeholder="Ex: Planilha Drive"
+                      placeholder="Ex: Planilha de Custos"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      URL do Link
+                  <div className="space-y-4">
+                    <label className="block text-sm font-bold text-slate-700">
+                      URL
                     </label>
                     <input
                       name="url"
                       type="url"
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       placeholder="https://..."
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-medium text-slate-700 placeholder:text-slate-400"
                     />
                   </div>
 
@@ -204,19 +225,21 @@ export function AddFileSection({ folderId }: { folderId: string }) {
                     <button
                       type="button"
                       onClick={() => setMode("select")}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      className="flex-1 px-4 py-3 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
                     >
                       Voltar
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition shadow-sm"
+                      className="flex-1 px-4 py-3 text-sm font-bold text-white bg-[#0b3566] hover:bg-[#092b52] rounded-xl shadow-lg shadow-blue-900/10 transition-all flex items-center justify-center gap-2"
                     >
-                      {loading && (
-                        <Loader2 className="animate-spin" size={16} />
+                      {loading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <LinkIcon size={18} />
                       )}
-                      Salvar
+                      {loading ? "Salvando..." : "Salvar Link"}
                     </button>
                   </div>
                 </form>

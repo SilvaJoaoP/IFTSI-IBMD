@@ -62,7 +62,7 @@ export async function addMediaAction(albumId: string, formData: FormData) {
   await checkPermission();
 
   const url = formData.get("url") as string;
-  const tipo = formData.get("tipo") as string;
+  const tipo = (formData.get("mediaType") as string) || "IMAGEM";
 
   if (!url) return { success: false, message: "URL obrigatória" };
 

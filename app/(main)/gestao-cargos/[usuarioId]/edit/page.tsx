@@ -4,6 +4,7 @@ import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { updateUserAction } from "../../actions";
 import { BackButton } from "@/components/BackButton";
+import { Shield, User, Mail, IdCard, Save, UserCog, Lock } from "lucide-react";
 
 export default async function PaginaEditarUsuario(props: {
   params: Promise<{ usuarioId: string }>;
@@ -27,111 +28,153 @@ export default async function PaginaEditarUsuario(props: {
   const updateUserWithId = updateUserAction.bind(null, usuario.id);
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <div className="mb-6">
+    <div className="pb-20 max-w-[1600px] mx-auto p-6 lg:p-8">
+      <div className="mb-8">
         <BackButton href="/gestao-cargos" />
       </div>
 
-      <h1 className="text-3xl font-bold mb-8">Editar Usuário</h1>
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 bg-[#0b3566]/10 text-[#0b3566] rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <UserCog size={32} />
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+            Editar Usuário
+          </h1>
+          <p className="text-slate-500 mt-2">
+            Atualize as informações e permissões de {usuario.nome}.
+          </p>
+        </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <form action={updateUserWithId} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl shadow-slate-200/50">
+          <form action={updateUserWithId} className="space-y-6">
+            <div className="space-y-2">
               <label
                 htmlFor="nome"
-                className="block text-sm font-medium text-gray-700"
+                className="text-sm font-bold text-slate-700"
               >
                 Nome
               </label>
-              <input
-                type="text"
-                name="nome"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                defaultValue={usuario.nome}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  name="nome"
+                  required
+                  defaultValue={usuario.nome}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                />
+                <User
+                  className="absolute left-3 top-3.5 text-slate-400"
+                  size={18}
+                />
+              </div>
             </div>
 
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="text-sm font-bold text-slate-700"
               >
                 Email
               </label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                defaultValue={usuario.email}
-              />
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  defaultValue={usuario.email}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                />
+                <Mail
+                  className="absolute left-3 top-3.5 text-slate-400"
+                  size={18}
+                />
+              </div>
             </div>
 
-            <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label
+                  htmlFor="cpf"
+                  className="text-sm font-bold text-slate-700"
+                >
+                  CPF <span className="text-slate-400 font-normal">(Op.)</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="cpf"
+                    defaultValue={usuario.cpf || ""}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                  />
+                  <IdCard
+                    className="absolute left-3 top-3.5 text-slate-400"
+                    size={18}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="cargo"
+                  className="text-sm font-bold text-slate-700"
+                >
+                  Cargo
+                </label>
+                <div className="relative">
+                  <select
+                    name="cargo"
+                    required
+                    defaultValue={usuario.cargo}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium appearance-none cursor-pointer"
+                  >
+                    {Object.values(Role).map((cargo) => (
+                      <option key={cargo} value={cargo}>
+                        {cargo}
+                      </option>
+                    ))}
+                  </select>
+                  <Shield
+                    className="absolute left-3 top-3.5 text-slate-400"
+                    size={18}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-gray-100" />
+
+            <div className="space-y-2">
               <label
-                htmlFor="cpf"
-                className="block text-sm font-medium text-gray-700"
+                htmlFor="senha"
+                className="text-sm font-bold text-slate-700"
               >
-                CPF (Opcional)
+                Nova Senha{" "}
+                <span className="text-slate-400 font-normal">(Opcional)</span>
               </label>
-              <input
-                type="text"
-                name="cpf"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                defaultValue={usuario.cpf || ""}
-              />
+              <div className="relative">
+                <input
+                  type="password"
+                  name="senha"
+                  placeholder="Deixe em branco para manter"
+                  className="w-full pl-10 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                />
+                <Lock
+                  className="absolute left-3 top-3.5 text-slate-400"
+                  size={18}
+                />
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="cargo"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Cargo
-              </label>
-              <select
-                name="cargo"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                defaultValue={usuario.cargo}
-              >
-                {Object.values(Role).map((cargo) => (
-                  <option key={cargo} value={cargo}>
-                    {cargo}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <hr />
-
-          <div>
-            <label
-              htmlFor="senha"
-              className="block text-sm font-medium text-gray-700"
+            <button
+              type="submit"
+              className="w-full bg-[#0b3566] hover:bg-[#092b52] text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 mt-6"
             >
-              Nova Senha (Opcional)
-            </label>
-            <p className="text-xs text-gray-500">
-              Deixe em branco para não alterar a senha.
-            </p>
-            <input
-              type="password"
-              name="senha"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Atualizar Usuário
-          </button>
-        </form>
+              <Save size={20} />
+              SALVAR ALTERAÇÕES
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

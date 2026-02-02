@@ -6,6 +6,16 @@ import { createUserAction, deleteUserAction } from "./actions";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
+import {
+  Shield,
+  UserPlus,
+  Users,
+  Trash2,
+  Edit,
+  Mail,
+  IdCard,
+} from "lucide-react";
+import { UserStatusManager } from "@/components/UserStatusManager";
 
 function DeleteUserButton({ id }: { id: string }) {
   const deleteUserWithId = async () => {
@@ -15,8 +25,12 @@ function DeleteUserButton({ id }: { id: string }) {
   };
   return (
     <form action={deleteUserWithId}>
-      <button type="submit" className="text-red-500 hover:text-red-700">
-        Deletar
+      <button
+        type="submit"
+        className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-colors border border-red-100 hover:border-red-600"
+        title="Deletar usuário"
+      >
+        <Trash2 size={18} />
       </button>
     </form>
   );
@@ -33,129 +47,237 @@ export default async function PaginaGestaoCargos() {
   });
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <BackButton href="/dashboard" />
-
-      <h1 className="text-3xl font-bold mb-8">Gestão de Cargos e Usuários</h1>
-
-      {}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-xl font-semibold mb-4">Criar Novo Usuário</h2>
-        <form action={createUserAction} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="nome"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Nome
-              </label>
-              <input
-                type="text"
-                name="nome"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="cpf"
-                className="block text-sm font-medium text-gray-700"
-              >
-                CPF (Opcional)
-              </label>
-              <input
-                type="text"
-                name="cpf"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="cargo"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Cargo
-              </label>
-              <select
-                name="cargo"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              >
-                {}
-                {Object.values(Role).map((cargo) => (
-                  <option key={cargo} value={cargo}>
-                    {cargo}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="senha"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha Provisória
-            </label>
-            <input
-              type="password"
-              name="senha"
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Criar Usuário
-          </button>
-        </form>
+    <div className="pb-20 max-w-[1600px] mx-auto p-6 lg:p-8">
+      <div className="mb-8">
+        <BackButton href="/dashboard" />
       </div>
 
-      {}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Usuários Cadastrados</h2>
-        <ul className="space-y-3">
-          {usuarios.map((user) => (
-            <li
-              key={user.id}
-              className="flex justify-between items-center border-b pb-2"
-            >
-              <div>
-                <p className="font-semibold">
-                  {user.nome}{" "}
-                  <span className="text-sm font-normal text-gray-500">
-                    ({user.cargo})
-                  </span>
-                </p>
-                <p className="text-sm text-gray-600">{user.email}</p>
-                <Link
-                  href={`/gestao-cargos/${user.id}/edit`}
-                  className="text-blue-500 hover:text-blue-700 text-sm"
-                >
-                  Editar
-                </Link>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+            Gestão de Cargos
+          </h1>
+          <p className="text-slate-500 mt-2">
+            Gerencie usuários, permissões e acessos ao sistema.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Formulário de Criação */}
+        <div className="xl:col-span-1 h-fit">
+          <div className="bg-white rounded-3xl p-6 lg:p-8 border border-gray-100 shadow-xl shadow-slate-200/50 sticky top-8">
+            <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-[#0b3566]">
+                <UserPlus size={24} />
               </div>
-              <DeleteUserButton id={user.id} />
-            </li>
-          ))}
-        </ul>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">
+                  Novo Usuário
+                </h2>
+                <p className="text-slate-500 text-sm">Cadastrar novo membro</p>
+              </div>
+            </div>
+
+            <form action={createUserAction} className="space-y-5">
+              <div className="space-y-2">
+                <label
+                  htmlFor="nome"
+                  className="text-sm font-bold text-slate-700"
+                >
+                  Nome Completo
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="nome"
+                    required
+                    placeholder="Ex: João da Silva"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                  />
+                  <Users
+                    className="absolute left-3 top-3.5 text-slate-400"
+                    size={18}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-bold text-slate-700"
+                >
+                  Email
+                </label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="usuario@exemplo.com"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                  />
+                  <Mail
+                    className="absolute left-3 top-3.5 text-slate-400"
+                    size={18}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="cpf"
+                    className="text-sm font-bold text-slate-700"
+                  >
+                    CPF{" "}
+                    <span className="text-slate-400 font-normal">(Op.)</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="cpf"
+                      placeholder="000.000.000-00"
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                    />
+                    <IdCard
+                      className="absolute left-3 top-3.5 text-slate-400"
+                      size={18}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="cargo"
+                    className="text-sm font-bold text-slate-700"
+                  >
+                    Cargo
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="cargo"
+                      required
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium appearance-none cursor-pointer"
+                    >
+                      {Object.values(Role).map((cargo) => (
+                        <option key={cargo} value={cargo}>
+                          {cargo}
+                        </option>
+                      ))}
+                    </select>
+                    <Shield
+                      className="absolute left-3 top-3.5 text-slate-400"
+                      size={18}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="senha"
+                  className="text-sm font-bold text-slate-700"
+                >
+                  Senha Provisória
+                </label>
+                <input
+                  type="password"
+                  name="senha"
+                  required
+                  placeholder="********"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-700 font-medium placeholder:text-slate-400"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-[#0b3566] hover:bg-[#092b52] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 mt-4"
+              >
+                <UserPlus size={20} />
+                CRIAR USUÁRIO
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Lista de Usuários */}
+        <div className="xl:col-span-2">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">
+                  Usuários Cadastrados
+                </h2>
+                <p className="text-slate-500 text-sm">
+                  {usuarios.length} registros encontrados
+                </p>
+              </div>
+              <div className="p-2 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <Users className="text-slate-400" size={20} />
+              </div>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+              {usuarios.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex flex-col md:flex-row md:items-center justify-between p-6 hover:bg-slate-50/50 transition-colors group gap-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-lg shrink-0 border-2 border-white shadow-sm ring-1 ring-slate-100">
+                      {user.nome.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                        {user.nome}
+                        <span
+                          className={`text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full border ${
+                            user.cargo === "PASTOR"
+                              ? "bg-purple-100 text-purple-700 border-purple-200"
+                              : user.cargo === "ADMIN"
+                                ? "bg-red-100 text-red-700 border-red-200"
+                                : "bg-blue-100 text-blue-700 border-blue-200"
+                          }`}
+                        >
+                          {user.cargo}
+                        </span>
+                      </h3>
+                      <p className="text-sm text-slate-500 flex items-center gap-1.5 mt-0.5">
+                        <Mail size={12} /> {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row items-center gap-3 pl-16 md:pl-0">
+                    <UserStatusManager
+                      userId={user.id}
+                      currentStatus={user.status}
+                      suspendedUntil={user.suspendedUntil}
+                    />
+                    <div className="hidden md:block w-px h-8 bg-slate-200 mx-2"></div>
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/gestao-cargos/${user.id}/edit`}
+                        className="p-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-colors border border-blue-100 hover:border-blue-600"
+                        title="Editar"
+                      >
+                        <Edit size={18} />
+                      </Link>
+                      <DeleteUserButton id={user.id} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {usuarios.length === 0 && (
+              <div className="p-12 text-center">
+                <p className="text-slate-500">Nenhum usuário cadastrado.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

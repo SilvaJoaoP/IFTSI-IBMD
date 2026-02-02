@@ -14,7 +14,7 @@ export function DeleteFolderButton({
 }: DeleteFolderButtonProps) {
   const handleDelete = async () => {
     const confirmed = window.confirm(
-      `Quer realmente excluir a pasta '${folderName}' e seus itens PERMANENTEMENTE?`
+      `Quer realmente excluir a pasta '${folderName}' e seus itens PERMANENTEMENTE?`,
     );
 
     if (confirmed) {
@@ -25,9 +25,10 @@ export function DeleteFolderButton({
   return (
     <button
       onClick={handleDelete}
-      className="text-red-600 hover:text-red-800 flex items-center gap-2 bg-white px-4 py-2 rounded border border-red-200 shadow-sm"
+      className="flex items-center gap-2 bg-white text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-transparent hover:border-rose-200 text-sm font-bold px-4 py-2 rounded-xl transition-all"
     >
-      <Trash2 size={20} /> Excluir Pasta
+      <Trash2 size={18} />
+      <span className="hidden md:inline">EXCLUIR PASTA</span>
     </button>
   );
 }

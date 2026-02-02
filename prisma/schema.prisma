@@ -13,17 +13,27 @@ enum Role {
   SECRETARIO
   DIACONO
   MIDIA
+  MEMBRO
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  nome      String
-  cpf       String?   @unique
-  senha     String
-  cargo     Role
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id             String        @id @default(cuid())
+  email          String        @unique
+  nome           String
+  cpf            String?       @unique
+  senha          String
+  cargo          Role
+  status         AccountStatus @default(ACTIVE)
+  suspendedUntil DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  escalas        EscalaItem[]
 }
 
 enum SituacaoMembro {
@@ -45,24 +55,24 @@ enum TipoParentesco {
 }
 
 model Membro {
-  id        String    @id @default(cuid())
-  nome      String
-  cpf       String?   @unique
-  email     String?
-  telefone  String?
+  id       String  @id @default(cuid())
+  nome     String
+  cpf      String? @unique
+  email    String?
+  telefone String?
 
   // Endereço
-  rua       String?
-  numero    String?
-  bairro    String?
-  cidade    String?
-  estado    String?
-  cep       String?
+  rua    String?
+  numero String?
+  bairro String?
+  cidade String?
+  estado String?
+  cep    String?
 
-  situacao  SituacaoMembro @default(MEMBRO)
+  situacao SituacaoMembro @default(MEMBRO)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relacionamentos
   parentesOrigem  Parentesco[] @relation("MembroOrigem")
@@ -70,49 +80,85 @@ model Membro {
 }
 
 model Parentesco {
-  id              String @id @default(cuid())
+  id              String         @id @default(cuid())
   membroOrigemId  String
   membroDestinoId String
   tipo            TipoParentesco
 
-  membroOrigem    Membro @relation("MembroOrigem", fields: [membroOrigemId], references: [id], onDelete: Cascade)
-  membroDestino   Membro @relation("MembroDestino", fields: [membroDestinoId], references: [id], onDelete: Cascade)
+  membroOrigem  Membro @relation("MembroOrigem", fields: [membroOrigemId], references: [id], onDelete: Cascade)
+  membroDestino Membro @relation("MembroDestino", fields: [membroDestinoId], references: [id], onDelete: Cascade)
 
   @@unique([membroOrigemId, membroDestinoId])
 }
 
 model Album {
-  id          String   @id @default(cuid())
-  titulo      String
-  capaUrl     String?  @db.Text
-  dataEvento  DateTime @default(now())
+  id         String   @id @default(cuid())
+  titulo     String
+  capaUrl    String?  @db.Text
+  dataEvento DateTime @default(now())
+  
+  midias     Midia[]
+  
+  createdAt  DateTime @default(now())
+}
 
-  midias      Midia[]
+// Modelo de Eventos
+model Evento {
+  id         String    @id @default(cuid())
+  titulo     String
+  descricao  String?
+  links      String?   // Vamos armazenar como JSON string ou texto
+  dataInicio DateTime
+  dataFim    DateTime?
+  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
 
-  createdAt   DateTime @default(now())
+model Escala {
+  id        String       @id @default(cuid())
+  titulo    String
+  descricao String?
+  data      DateTime
+  items     EscalaItem[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model EscalaItem {
+  id        String @id @default(cuid())
+  escalaId  String
+  usuarioId String
+  funcao    String
+  
+  escala  Escala @relation(fields: [escalaId], references: [id], onDelete: Cascade)
+  usuario User   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([escalaId])
+  @@index([usuarioId])
 }
 
 model Midia {
-  id          String    @id @default(cuid())
-  url         String    @db.Text
-  descricao   String?
-  tipo        String
+  id        String  @id @default(cuid())
+  url       String  @db.Text
+  descricao String?
+  tipo      String
 
-  albumId     String
-  album       Album     @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String
+  album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime  @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Planilha {
-  id        String    @id @default(cuid())
-  mes       String
-  ano       Int
+  id  String @id @default(cuid())
+  mes String
+  ano Int
 
   registros RegistroFinanceiro[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([mes, ano])
 }
@@ -124,48 +170,48 @@ enum TipoRegistro {
 }
 
 model RegistroFinanceiro {
-  id             String        @id @default(cuid())
-  descricao      String
-  valor          Float
-  data           DateTime
-  tipo           TipoRegistro
+  id        String       @id @default(cuid())
+  descricao String
+  valor     Float
+  data      DateTime
+  tipo      TipoRegistro
 
-  contaDigital   Boolean       @default(false)
-  recorrente     Boolean       @default(false)
-  ativo          Boolean       @default(true)
+  contaDigital Boolean @default(false)
+  recorrente   Boolean @default(false)
+  ativo        Boolean @default(true)
 
-  parcelaAtual   Int?
-  totalParcelas  Int?
-  grupoId        String?
+  parcelaAtual  Int?
+  totalParcelas Int?
+  grupoId       String?
 
-  comprovanteUrl String?       @db.Text
+  comprovanteUrl String? @db.Text
 
-  planilhaId     String
-  planilha       Planilha      @relation(fields: [planilhaId], references: [id], onDelete: Cascade)
+  planilhaId String
+  planilha   Planilha @relation(fields: [planilhaId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model DocumentFolder {
-  id        String         @id @default(cuid())
-  name      String
+  id   String @id @default(cuid())
+  name String
 
-  files     DocumentFile[]
+  files DocumentFile[]
 
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model DocumentFile {
-  id        String         @id @default(cuid())
-  name      String
-  url       String         @db.Text
-  type      String         @default("PDF")
+  id   String @id @default(cuid())
+  name String
+  url  String @db.Text
+  type String @default("PDF")
 
-  folderId  String
-  folder    DocumentFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId String
+  folder   DocumentFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
